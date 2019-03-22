@@ -25,6 +25,12 @@ function bp_group_livechat_init() {
 }
 add_action( 'bp_init', 'bp_group_livechat_init' );
 
+function bp_group_livechat_enqueue_styes() {
+	wp_enqueue_style( 'bp-group-livechat-style', plugin_dir_url( __FILE__ ) . 'includes/css/bp-group-livechat-display.css' );
+}
+
+add_action( 'bp_enqueue_scripts', 'bp_group_livechat_enqueue_styes' );
+
 // create the tables
 function bp_group_livechat_activate() {
 	global $wpdb;

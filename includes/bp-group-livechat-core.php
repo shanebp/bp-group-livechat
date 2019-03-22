@@ -118,7 +118,7 @@ class BP_Group_Livechat extends BP_Group_Extension {
 	function edit_screen_save( $group_id = null ) {
 		global $bp;
 
-		if ( !isset( $_POST['save'] ) )
+		if ( sanitize_text_field( $_POST['save'] !== null ) )
 			return false;
 
 		if ( ! $group_id ) {
@@ -127,7 +127,7 @@ class BP_Group_Livechat extends BP_Group_Extension {
 
 		check_admin_referer( 'groups_edit_save_' . $this->slug );
 		
-		if ( $_POST['bp_group_livechat_enabled'] == 1 ) {
+		if ( sanitize_text_field( $_POST['bp_group_livechat_enabled'] ) == 1 ) {
 			groups_update_groupmeta( $group_id, 'bp_group_livechat_enabled', 1 );
 		} else {
 			groups_update_groupmeta( $group_id, 'bp_group_livechat_enabled', 0 );

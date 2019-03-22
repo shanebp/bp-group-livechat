@@ -36,8 +36,8 @@ function bpGroupLivechatLoadMessages() {
 }
 </script>
 
-<div id="livechat-chat-box" style="width:70%;float:left;">
-	<div id="bp-livechat-chat-container" style="border:1px solid silver;height:400px;margin-top:5px;margin-right:5px;padding-left:3px;overflow:scroll;">
+<div id="livechat-chat-box">
+	<div id="bp-livechat-chat-container" >
 	</div>
 	<form>
 	<input id="bp_group_livechat_textbox" name="bp_group_livechat_textbox" type="text" size="45"/>
@@ -45,7 +45,7 @@ function bpGroupLivechatLoadMessages() {
 	</form>
 </div>
 
-<div id="livechat-users-online-container" style="width:30%;float:right;">
+<div id="livechat-users-online-container" >
 	<h5><?php echo sanitize_text_field( __( 'Users in the Chat Room', 'bp-group-livechat' ) ); ?></h5>
 	<ul id="livechat-users-online" class="item-list-chat" role="main">
 	</ul>

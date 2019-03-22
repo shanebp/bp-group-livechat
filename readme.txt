@@ -3,7 +3,7 @@ Contributors: aekeron
 Tags: buddypress, ajax, chat, groups
 Requires at least: WordPress 3.5.1, BuddyPress 1.7.2
 Tested up to: WordPress 3.5.1 / BuddyPress 1.7.2
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 Copyright: to 2018 David Cartwright, from 2019 Venutius
 Basic live chat within BuddyPress groups.
 Donate Link: paypal.me/GeorgeChaplin
