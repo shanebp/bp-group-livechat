@@ -16,3 +16,9 @@
 	width:30%;
 	float:right;">
 }
+
+.user-list-item {
+	display:flex;
+	align-content:center;
+	align-items: center;
+}

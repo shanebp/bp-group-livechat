@@ -81,7 +81,7 @@ class BP_Group_Livechat extends BP_Group_Extension {
 
 		check_admin_referer( 'groups_create_save_' . $this->slug );	
 		
-		if ( $_POST['bp_group_livechat_enabled'] == 1 ) {
+		if ( sanitize_text_field( $_POST['bp_group_livechat_enabled'] ) == 1 ) {
 			groups_update_groupmeta( $group_id, 'bp_group_livechat_enabled', 1 );
 		}
 	}

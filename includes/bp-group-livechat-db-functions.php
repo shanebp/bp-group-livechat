@@ -37,7 +37,7 @@ function bp_group_livechat_who_is_online() {
 			foreach( $rows as $bp_group_livechat_user ) {
 				if ( time() - $bp_group_livechat_user->timestamp < 15 ) {
 					echo '<li id="' . $bp_group_livechat_user->timestamp . '" class="item-list" style="display: flex; align-content: center;">';
-					echo '<div class="user-list-item" style="display:flex; align-content: center; align-items: center;">';
+					echo '<div class="user-list-item" >';
 					echo '<div class="bp-livechat-user-online-avatar">' . bp_core_fetch_avatar( 'item_id='.$bp_group_livechat_user->user_id.'&object=user&type=thumb&width=20&height=20' )  . '</div>';
 					echo '<div class="bp-livechat-user-online-name">' . '<label>' . ' - ' . bp_core_get_userlink( $bp_group_livechat_user->user_id ) . '</label>' . '</div>';
 					echo bp_add_friend_button( $bp_group_livechat_user->user_id );
