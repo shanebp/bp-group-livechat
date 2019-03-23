@@ -27,6 +27,10 @@ add_action( 'bp_init', 'bp_group_livechat_init' );
 
 function bp_group_livechat_enqueue_styes() {
 	wp_enqueue_style( 'bp-group-livechat-style', plugin_dir_url( __FILE__ ) . 'includes/css/bp-group-livechat-display.css' );
+	wp_enqueue_script( 'bp-group-livecht-times', plugin_dir_url( __FILE__ ) . 'includes/js/jquery-timers-1.2.js' );
+	wp_register_script( 'bp-group-livechat-frontend', plugin_dir_url( __FILE__ ) . 'includes/js/bp-group-livechat-frontend.js');
+	wp_enqueue_script( 'bp-group-livechat-frontend' );
+	wp_localize_script( 'bp-group-livechat-frontend', 'ajax_object', array( 'ajaxurl' => admin_url( 'admin-ajax.php'), 'check_nonce' => wp_create_nonce('bpgl-nonce') ) );
 }
 
 add_action( 'bp_enqueue_scripts', 'bp_group_livechat_enqueue_styes' );

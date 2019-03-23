@@ -7,7 +7,7 @@ function bp_group_livechat_who_is_online() {
 	if ( sanitize_text_field( $_POST['bp_group_livechat_online_query'] ) == 1 ) {	
 		//die if nonce fail
 		$livechat_group_id = sanitize_text_field( $_POST['bp_group_livechat_group_id'] );
-		check_ajax_referer( 'groups_livechat_heartbeat_' . $livechat_group_id );
+		check_ajax_referer( 'bpgl-nonce', 'security' );
 		// only do this is member of the group or super admin
 		if ( groups_is_user_member( $bp->loggedin_user->id, $livechat_group_id )
 			 || groups_is_user_mod( $bp->loggedin_user->id, $livechat_group_id ) 
@@ -57,7 +57,7 @@ function bp_group_livechat_new_message() {
 	if ( sanitize_text_field( $_POST['bp_group_livechat_new_message'] ) == 1 ) {
 		$livechat_group_id = sanitize_text_field( $_POST['bp_group_livechat_group_id'] );
 		//die if nonce fail
-		check_ajax_referer( 'groups_livechat_new_message_' . $livechat_group_id );
+		check_ajax_referer( 'bpgl-nonce', 'security' );
 		// only do this is member of the group or super admin
 		if ( groups_is_user_member( $bp->loggedin_user->id, $livechat_group_id )
 			 || groups_is_user_mod( $bp->loggedin_user->id, $livechat_group_id ) 
@@ -86,7 +86,7 @@ function bp_group_livechat_load_messages() {
 	if ( sanitize_text_field( $_POST['bp_group_livechat_load_messages'] ) == 1 ) {	
 		$livechat_group_id = sanitize_text_field( $_POST['bp_group_livechat_group_id'] );
 		//die if nonce fail
-		check_ajax_referer( 'groups_livechat_load_messages_' . $livechat_group_id );
+		check_ajax_referer( 'bpgl-nonce', 'security' );
 		// only do this is member of the group or super admin
 		if ( groups_is_user_member( $bp->loggedin_user->id, $livechat_group_id )
 			 || groups_is_user_mod( $bp->loggedin_user->id, $livechat_group_id ) 
