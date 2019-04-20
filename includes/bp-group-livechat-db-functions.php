@@ -2,32 +2,32 @@
 if ( !defined( 'ABSPATH' ) ) exit;
 
 function bp_group_livechat_who_is_online() {
-	global $bp, $wpdb;
-	
-	if ( sanitize_text_field( $_POST['bp_group_livechat_online_query'] ) == 1 ) {	
+	global $wpdb;
+
+	if ( sanitize_text_field( $_POST['bp_group_livechat_online_query'] ) == 1 ) {
 		//die if nonce fail
 		$livechat_group_id = sanitize_text_field( $_POST['bp_group_livechat_group_id'] );
 		check_ajax_referer( 'bpgl-nonce', 'security' );
 		// only do this is member of the group or super admin
-		if ( groups_is_user_member( $bp->loggedin_user->id, $livechat_group_id )
-			 || groups_is_user_mod( $bp->loggedin_user->id, $livechat_group_id ) 
-			 || groups_is_user_admin( $bp->loggedin_user->id, $livechat_group_id )
+		if ( groups_is_user_member( bp_loggedin_user_id(), $livechat_group_id )
+			 || groups_is_user_mod( bp_loggedin_user_id(), $livechat_group_id )
+			 || groups_is_user_admin( bp_loggedin_user_id(), $livechat_group_id )
 			 || is_super_admin() ) {
-				 
+
 			//delete old
 			$sql = $wpdb->prepare( "DELETE FROM {$wpdb->base_prefix}bp_group_livechat_online WHERE ".
-								   "group_id=%d AND user_id=%d", 
-								   $livechat_group_id, $bp->loggedin_user->id  );
+								   "group_id=%d AND user_id=%d",
+								   $livechat_group_id, bp_loggedin_user_id()  );
 			$wpdb->query($sql);
 			//add new
 			$sql = $wpdb->prepare( "INSERT INTO {$wpdb->base_prefix}bp_group_livechat_online".
 								   "( group_id, user_id, timestamp ) ".
-								   "VALUES ( %d, %d, %s )", 
-								   $livechat_group_id, $bp->loggedin_user->id, time() );
+								   "VALUES ( %d, %d, %s )",
+								   $livechat_group_id, bp_loggedin_user_id(), time() );
 			$wpdb->query($sql);
 			//get users viewing this page
 			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->base_prefix}bp_group_livechat_online ".
-								   "WHERE group_id=%d", 
+								   "WHERE group_id=%d",
 								   $livechat_group_id ) );
 			if( empty( $rows ) ) {
 				echo 'nobody online - how are you even viewing this?';
@@ -52,27 +52,27 @@ function bp_group_livechat_who_is_online() {
 add_action( 'wp_ajax_bp_livechat_heartbeat', 'bp_group_livechat_who_is_online' );
 
 function bp_group_livechat_new_message() {
-	global $bp, $wpdb;
-	
+	global $wpdb;
+
 	if ( sanitize_text_field( $_POST['bp_group_livechat_new_message'] ) == 1 ) {
 		$livechat_group_id = sanitize_text_field( $_POST['bp_group_livechat_group_id'] );
 		//die if nonce fail
 		check_ajax_referer( 'bpgl-nonce', 'security' );
 		// only do this is member of the group or super admin
-		if ( groups_is_user_member( $bp->loggedin_user->id, $livechat_group_id )
-			 || groups_is_user_mod( $bp->loggedin_user->id, $livechat_group_id ) 
-			 || groups_is_user_admin( $bp->loggedin_user->id, $livechat_group_id )
+		if ( groups_is_user_member( bp_loggedin_user_id(), $livechat_group_id )
+			 || groups_is_user_mod( bp_loggedin_user_id(), $livechat_group_id )
+			 || groups_is_user_admin( bp_loggedin_user_id(), $livechat_group_id )
 			 || is_super_admin() ) {
-				 
+
 			//add new message
 			$text_content = wp_filter_post_kses( $_POST['bp_group_livechat_textbox'] );
 			$text_content = nl2br( make_clickable( $text_content ) );
 
-			$message_content = '[' . gmdate('H:i') . ']<strong>' . $bp->loggedin_user->fullname . '</strong>: ' . $text_content;
+			$message_content = '[' . gmdate('H:i') . ']<strong>' . bp_core_get_user_displayname( bp_loggedin_user_id() ) . '</strong>: ' . $text_content;
 			$sql = $wpdb->prepare( "INSERT INTO {$wpdb->base_prefix}bp_group_livechat".
 								   "( group_id, user_id, message_content ) ".
-								   "VALUES ( %d, %d, %s )", 
-								   $livechat_group_id, $bp->loggedin_user->id, $message_content );
+								   "VALUES ( %d, %d, %s )",
+								   $livechat_group_id, bp_loggedin_user_id(), $message_content );
 			$wpdb->query($sql);
 			die;
 		}
@@ -81,21 +81,21 @@ function bp_group_livechat_new_message() {
 add_action( 'wp_ajax_bp_livechat_new_message', 'bp_group_livechat_new_message' );
 
 function bp_group_livechat_load_messages() {
-	global $bp, $wpdb;
-	
-	if ( sanitize_text_field( $_POST['bp_group_livechat_load_messages'] ) == 1 ) {	
+	global $wpdb;
+
+	if ( sanitize_text_field( $_POST['bp_group_livechat_load_messages'] ) == 1 ) {
 		$livechat_group_id = sanitize_text_field( $_POST['bp_group_livechat_group_id'] );
 		//die if nonce fail
 		check_ajax_referer( 'bpgl-nonce', 'security' );
 		// only do this is member of the group or super admin
-		if ( groups_is_user_member( $bp->loggedin_user->id, $livechat_group_id )
-			 || groups_is_user_mod( $bp->loggedin_user->id, $livechat_group_id ) 
-			 || groups_is_user_admin( $bp->loggedin_user->id, $livechat_group_id )
+		if ( groups_is_user_member( bp_loggedin_user_id(), $livechat_group_id )
+			 || groups_is_user_mod( bp_loggedin_user_id(), $livechat_group_id )
+			 || groups_is_user_admin( bp_loggedin_user_id(), $livechat_group_id )
 			 || is_super_admin() ) {
-					 
+
 			//load last messages
 			$rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->base_prefix}bp_group_livechat ".
-								   "WHERE group_id=%d ORDER BY id DESC LIMIT 100", 
+								   "WHERE group_id=%d ORDER BY id ASC LIMIT 100",
 								   $livechat_group_id ) );
 			if( empty( $rows ) ) {
 				echo '-no messages yet-';
@@ -110,4 +110,3 @@ function bp_group_livechat_load_messages() {
 	}
 }
 add_action( 'wp_ajax_bp_livechat_load_messages', 'bp_group_livechat_load_messages' );
-?>

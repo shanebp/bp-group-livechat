@@ -29,41 +29,41 @@ function bp_group_livechat_setup_globals() {
 add_action( 'bp_setup_globals', 'bp_group_livechat_setup_globals' );
 
 
-class BP_Group_Livechat extends BP_Group_Extension {	
+class BP_Group_Livechat extends BP_Group_Extension {
 
 	function __construct() {
 		global $bp;
-		
+
 		$this->name = 'Live Chat';
 		$this->slug = 'live-chat';
 
 		$this->create_step_position = 16;
 		$this->nav_item_position = 31;
-		
+
 		if ( isset( $bp->groups->current_group->id ) && groups_get_groupmeta( $bp->groups->current_group->id, 'bp_group_livechat_enabled' ) == '1' ) {
 			$this->enable_nav_item = true;
 		} else {
 			$this->enable_nav_item = false;
-		}		
-				
-	}	
-	
+		}
+
+	}
+
 	function create_screen( $group_id = null) {
 		global $bp;
-		
+
 		if ( ! $group_id ) {
 			$group_id = $bp->groups->current_group->id;
 		}
-		
+
 		if ( !bp_is_group_creation_step( $this->slug ) )
 			return false;
-			
+
 		wp_nonce_field( 'groups_create_save_' . $this->slug );
 		?>
-		<input type="checkbox" name="bp_group_livechat_enabled" id="bp_group_livechat_enabled" value="1"  
-			<?php 
+		<input type="checkbox" name="bp_group_livechat_enabled" id="bp_group_livechat_enabled" value="1"
+			<?php
 			if ( groups_get_groupmeta( $group_id, 'bp_group_livechat_enabled' ) == '1' ) {
-				echo 'checked=1';
+				echo ' checked ';
 			}
 			?>
 		/>
@@ -74,13 +74,13 @@ class BP_Group_Livechat extends BP_Group_Extension {
 
 	function create_screen_save( $group_id = null) {
 		global $bp;
-		
+
 		if ( ! $group_id ) {
 			$group_id = $bp->groups->current_group->id;
 		}
 
-		check_admin_referer( 'groups_create_save_' . $this->slug );	
-		
+		check_admin_referer( 'groups_create_save_' . $this->slug );
+
 		if ( sanitize_text_field( $_POST['bp_group_livechat_enabled'] ) == 1 ) {
 			groups_update_groupmeta( $group_id, 'bp_group_livechat_enabled', 1 );
 		}
@@ -88,24 +88,24 @@ class BP_Group_Livechat extends BP_Group_Extension {
 
 	function edit_screen( $group_id = null ) {
 		global $bp;
-		
+
 		if ( !groups_is_user_admin( $bp->loggedin_user->id, $bp->groups->current_group->id ) ) {
 			return false;
 		}
-		
+
 		if ( !bp_is_group_admin_screen( $this->slug ) )
 			return false;
-			
+
 		if ( ! $group_id ) {
 			$group_id = $bp->groups->current_group->id;
 		}
 
 		wp_nonce_field( 'groups_edit_save_' . $this->slug );
 		?>
-		<input type="checkbox" name="bp_group_livechat_enabled" id="bp_group_livechat_enabled" value="1"  
-			<?php 
+		<input type="checkbox" name="bp_group_livechat_enabled" id="bp_group_livechat_enabled" value="1"
+			<?php
 			if ( groups_get_groupmeta( $group_id, 'bp_group_livechat_enabled' ) == '1' ) {
-				echo 'checked=1';
+				echo ' checked ';
 			}
 			?>
 		/>
@@ -118,7 +118,7 @@ class BP_Group_Livechat extends BP_Group_Extension {
 	function edit_screen_save( $group_id = null ) {
 		global $bp;
 
-		if ( sanitize_text_field( $_POST['save'] !== null ) )
+		if ( sanitize_text_field( $_POST['save'] == null ) )
 			return false;
 
 		if ( ! $group_id ) {
@@ -126,31 +126,35 @@ class BP_Group_Livechat extends BP_Group_Extension {
 		}
 
 		check_admin_referer( 'groups_edit_save_' . $this->slug );
-		
-		if ( sanitize_text_field( $_POST['bp_group_livechat_enabled'] ) == 1 ) {
-			groups_update_groupmeta( $group_id, 'bp_group_livechat_enabled', 1 );
+
+		if ( isset( $_POST['bp_group_livechat_enabled'] ) ) {
+			if ( sanitize_text_field( $_POST['bp_group_livechat_enabled'] ) == 1 ) {
+				groups_update_groupmeta( $group_id, 'bp_group_livechat_enabled', 1 );
+			} else {
+				groups_update_groupmeta( $group_id, 'bp_group_livechat_enabled', 0 );
+			}
 		} else {
 			groups_update_groupmeta( $group_id, 'bp_group_livechat_enabled', 0 );
 		}
-		
+
 		bp_core_add_message( __( 'Settings saved successfully', 'buddypress' ) );
-		
+
 		bp_core_redirect( bp_get_group_permalink( $bp->groups->current_group ) . 'admin/' . $this->slug );
 
 	}
 
 	function display( $group_id = null ) {
 		global $bp;
-		
+
 		if ( ! $group_id ) {
 			$group_id = $bp->groups->current_group->id;
 		}
 
 		if ( groups_is_user_member( $bp->loggedin_user->id, $group_id )
-			 || groups_is_user_mod( $bp->loggedin_user->id, $group_id ) 
+			 || groups_is_user_mod( $bp->loggedin_user->id, $group_id )
 			 || groups_is_user_admin( $bp->loggedin_user->id, $group_id )
 			 || is_super_admin() ) {
-			
+
 			$livechat_display = true;
 			require( dirname( __FILE__ ) . '/bp-group-livechat-display.php' );
 		} else {
@@ -158,9 +162,9 @@ class BP_Group_Livechat extends BP_Group_Extension {
 		}
 	}
 
-	function widget_display() { 
+	function widget_display() {
 		// Not used
 	}
 }
 bp_register_group_extension( 'BP_Group_Livechat' );
-?>
+

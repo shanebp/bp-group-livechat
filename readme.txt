@@ -3,7 +3,7 @@ Contributors: aekeron
 Tags: buddypress, ajax, chat, groups
 Requires at least: WordPress 3.5.1, BuddyPress 1.7.2
 Tested up to: WordPress 3.5.1 / BuddyPress 1.7.2
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 Copyright: to 2018 David Cartwright, from 2019 Venutius
 Basic live chat within BuddyPress groups.
 Donate Link: paypal.me/GeorgeChaplin
@@ -25,15 +25,19 @@ This plugin runs from your own server, no chat data leave your site. This has ha
 
 Download and upload the plugin to your plugins folder. Activate.
 
+On the front-end, go to a Group > Manage > LiveChat and select 'Enable Group Livechat' and save.
+A 'LiveChat' tab will appear on the main group nav. Click to start chatting.
+
 == Changelog ==
+
+= 1.2.2 =
+	* April 20, 2019
+	* fix bugs re db table creation and enable option
 
 = 1.2.0 =
 
-* 21/03/2019
+	* 21/03/2019
 
-* Initial release under new owner.
-* New: Added support for links.
+	* Initial release under new owner.
+	* New: Added support for links.
 
-== screenshots ==
-
-* screenshot-1.jpg - LiveChat in the group.

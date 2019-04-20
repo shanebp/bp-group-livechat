@@ -1,8 +1,8 @@
 <?php
 if ( !defined( 'ABSPATH' ) ) exit;
 
-global $bp;
 if ( !$livechat_display ) die;
+
 ?>
 
 
@@ -10,7 +10,7 @@ if ( !$livechat_display ) die;
 	<div id="bp-livechat-chat-container" >
 	</div>
 	<form>
-	<input type="hidden" id="group-livechat-info" data-groupid="<?php echo $bp->groups->current_group->id; ?>"/>
+	<input type="hidden" id="group-livechat-info" data-groupid="<?php echo bp_get_group_id(); ?>"/>
 	<input id="bp_group_livechat_textbox" name="bp_group_livechat_textbox" type="text" size="45"/>
 	<input type="submit" value="Say" onClick="bpGroupLivechatsubmitNewMessage();return false;"/>
 	</form>

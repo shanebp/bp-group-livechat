@@ -26,11 +26,16 @@ function bp_group_livechat_init() {
 add_action( 'bp_init', 'bp_group_livechat_init' );
 
 function bp_group_livechat_enqueue_styes() {
-	wp_enqueue_style( 'bp-group-livechat-style', plugin_dir_url( __FILE__ ) . 'includes/css/bp-group-livechat-display.css' );
-	wp_enqueue_script( 'bp-group-livecht-times', plugin_dir_url( __FILE__ ) . 'includes/js/jquery-timers-1.2.js' );
-	wp_register_script( 'bp-group-livechat-frontend', plugin_dir_url( __FILE__ ) . 'includes/js/bp-group-livechat-frontend.js');
-	wp_enqueue_script( 'bp-group-livechat-frontend' );
-	wp_localize_script( 'bp-group-livechat-frontend', 'ajax_object', array( 'ajaxurl' => admin_url( 'admin-ajax.php'), 'check_nonce' => wp_create_nonce('bpgl-nonce') ) );
+
+	if ( bp_is_group() ) {
+
+		wp_enqueue_style( 'bp-group-livechat-style', plugin_dir_url( __FILE__ ) . 'includes/css/bp-group-livechat-display.css' );
+		wp_enqueue_script( 'bp-group-livecht-times', plugin_dir_url( __FILE__ ) . 'includes/js/jquery-timers-1.2.js' );
+		wp_register_script( 'bp-group-livechat-frontend', plugin_dir_url( __FILE__ ) . 'includes/js/bp-group-livechat-frontend.js');
+		wp_enqueue_script( 'bp-group-livechat-frontend' );
+		wp_localize_script( 'bp-group-livechat-frontend', 'ajax_object', array( 'ajaxurl' => admin_url( 'admin-ajax.php'), 'check_nonce' => wp_create_nonce('bpgl-nonce') ) );
+
+	}
 }
 
 add_action( 'bp_enqueue_scripts', 'bp_group_livechat_enqueue_styes' );
@@ -39,29 +44,43 @@ add_action( 'bp_enqueue_scripts', 'bp_group_livechat_enqueue_styes' );
 function bp_group_livechat_activate() {
 	global $wpdb;
 
-	if ( !empty($wpdb->charset) )
+	$charset_collate = '';
+
+	if ( ! empty ( $wpdb->charset ) )
 		$charset_collate = "DEFAULT CHARACTER SET $wpdb->charset";
 
-	$sql[] = "CREATE TABLE {$wpdb->base_prefix}bp_group_livechat (
-		  		id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-		  		group_id bigint(20) NOT NULL,
-		  		user_id bigint(20) NOT NULL,
-		  		message_content text
-		 	   ) {$charset_collate};";
+	if ( ! empty ( $wpdb->collate ) )
+		$charset_collate .= " COLLATE $wpdb->collate";
 
-	$sql[] = "CREATE TABLE {$wpdb->base_prefix}bp_group_livechat_online (
-		  		id bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-		  		group_id bigint(20) NOT NULL,
-		  		user_id bigint(20) NOT NULL,
-		  		timestamp int(11) NOT NULL
-		 	   ) {$charset_collate};";
+	$table_name = $wpdb->base_prefix . "bp_group_livechat";
 
-	require_once( ABSPATH . 'wp-admin/upgrade-functions.php' );
+	if ( $wpdb->get_var("show tables like '$table_name'") != $table_name ) {
+		$sql = "CREATE TABLE $table_name (
+			id BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+			group_id BIGINT UNSIGNED NOT NULL,
+			user_id BIGINT UNSIGNED NOT NULL,
+			message_content TEXT
+		) $charset_collate;";
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		dbDelta($sql);
+	}
 
-	dbDelta($sql);
+	$table_name = $wpdb->base_prefix . "bp_group_livechat_online";
+
+	if ( $wpdb->get_var("show tables like '$table_name'") != $table_name ) {
+		$sql = "CREATE TABLE $table_name (
+		  		id BIGINT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+		  		group_id BIGINT UNSIGNED NOT NULL,
+		  		user_id BIGINT UNSIGNED NOT NULL,
+		  		timestamp INT UNSIGNED NOT NULL
+		) $charset_collate;";
+		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+		dbDelta($sql);
+	}
 
 	//update_site_option( 'bp-group-livechat-db-version', BP_GROUP_LIVECHAT_DB_VERSION );
+
 }
 register_activation_hook( __FILE__, 'bp_group_livechat_activate' );
 
-?>
+
